@@ -1,0 +1,88 @@
+#define _CRT_SECURE_NO_WARNINGS 1
+/*author: 逺哥*/
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+
+// 非递归，递归以及迭代分别实现求第n个斐波那契数。
+
+
+//非递归
+int Fibonacci1(int n)
+{
+	int arr[999] = { 0 };
+	arr[0] = 1;
+	arr[1] = 1;
+	int i = 0;
+	for (i = 2; i < n; i++)
+	{
+		arr[i] = arr[i - 1] + arr[i - 2];
+	}
+	return arr[n-1];
+}
+
+
+//递归
+int Fibonacci2(int n) //n 3
+{
+	if (n > 2)
+		return Fibonacci(n-1) + Fibonacci(n - 2);
+	else
+		return 1;
+}
+
+
+//分析一下递归求斐波那契数的缺陷，如下
+//假设要求第7项
+//Fib(7)
+//Fib(6) + Fib(5)
+//Fib(5) + Fib(4) + Fib(4) + Fib(3)
+//Fib(4) + Fib(3) + Fib(3) + Fib(2) + Fib(3) + Fib(2) + Fib(2) + Fib(1)
+//Fib(3) + Fib(2) + Fib(2) + Fib(1) + Fib(2) + Fib(1)	……	 + Fib(2) + Fib(1)
+//Fib(2) + Fib(1)  ……
+//由以上例子展开可知：
+//求第n个斐波那契数得计算 2^1 + 2^2 + 2 ^3 + 2 ^4 + …… + 2 ^(n-2)发现表达式是一个等比数列，对其进行求和得：
+//等比数列求和公式：a1(1-q^n)/(1 - q)
+//得出 2*（1-2^(n-2)）/(1-2) = 2^(n-1)-2
+//此时可得出递归求第n项斐波那契数的时间复杂度为 O(2^n)
+//由于递归求斐波那契数列会不断地大量重复运算大大降低了运算效率
+//当求的数较大时效率就极地假设要求第33个斐波那契数那么就得运算2^32==42亿多个数，对空间消耗也极大
+//用迭代的方法求斐波那契数列即使求第50个也才运算48次极大的提高了效率也节约了很多（空间）内存成本
+//迭代的方法求第n个数只需要求n-2次，时间复杂度是O(n)
+
+
+
+//迭代求斐波那契数
+int Fibonacci3(int n) //n 3
+{
+	int a=1, b=1, c=1;
+	while(n>2)
+	{
+		c = a + b;
+		a = b;
+		b = c;
+		n--;
+	}
+	return c;
+}
+
+int main()
+{
+	int n = 0;
+  
+	printf("求第n个斐波那契数（非递归），输入n：> \n");
+	(void)scanf("%d", &n);
+	printf("%d\n", Fibonacci1(n));
+
+  printf("求第n个斐波那契数（递归法），输入n：> \n");
+	(void)scanf("%d", &n);
+	printf("%d\n", Fibonacci2(n));
+
+  printf("求第n个斐波那契数（迭代法），输入n：> \n");
+	(void)scanf("%d", &n);
+	printf("%d\n", Fibonacci3(n));
+  
+	system("pause");
+	return 0;
+}
